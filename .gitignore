@@ -1,0 +1,9 @@
+bin/*
+!bin/.
+vscode/
+vscode-root/
+build/*
+lib/*
+project/python/_skbuild/*
+project/python/vn/*
+project/python/venv/*
