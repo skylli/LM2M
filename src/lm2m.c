@@ -40,6 +40,7 @@ Lm2m_ret_T lm2m_send(Lm2m_local_T *p_local, Lm2m_session_T *p_s, Lm2m_cmd_T cmd,
 	// payload
 	if(len > 0 && p_data){
 		p_pkt->len = len;
+		m2m_bytes_dump("send data: ", p_data, len);
 		mcpy(p_pkt->p_payload, p_data,len);
 	}
 
@@ -58,6 +59,9 @@ Lm2m_pkt_T *lm2m_receive_match(Lm2m_local_T *p_local, Lm2m_session_T *p_s, int l
 	// token
 	// message id
 	// id
+	if( p_pkt->cmd == LM2M_CMD_SCAN && p_pkt->ver == PROT_VER)
+		return p_pkt;
+		
 	if( p_pkt->ver != PROT_VER  || \
 		p_pkt->dst_idh != p_local->idh || p_pkt->dst_idl != p_local->idl ){
 		m2m_log_warn(" prot not match !");
@@ -68,12 +72,20 @@ Lm2m_pkt_T *lm2m_receive_match(Lm2m_local_T *p_local, Lm2m_session_T *p_s, int l
 		m2m_log("get token request.");
 		return p_pkt;
 		}
+	if(p_pkt->cmd == LM2M_CMD_GPIO_SET || p_pkt->cmd == LM2M_CMD_GPIO_SET_ACK){
+		m2m_log("to set gpio");
+		return p_pkt;
+		}
+	if(p_pkt->cmd == LM2M_CMD_SCAN || p_pkt->cmd == LM2M_CMD_SCAN_ACK){
+		m2m_log("scan");
+		return p_pkt;
+		}
 	// todo 
-	if( p_s->flag == 0 || p_pkt->src_idh != p_s->dst_idh || p_pkt->src_idl != p_s->dst_idl || \
+	/*if( p_s->flag == 0 || p_pkt->src_idh != p_s->dst_idh || p_pkt->src_idl != p_s->dst_idl || \
 		p_pkt->token !=  p_s->token || !A_BIGER_U8(p_pkt->msgid, p_s->msgid) ){
 		m2m_log("token or msg not match");
 		return NULL;
-			}
+			}*/
 
 	p_s->msgid = p_pkt->msgid;
 	return p_pkt;

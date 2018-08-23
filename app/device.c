@@ -4,6 +4,7 @@
 #include "../include/lm2m_log.h"
 #include "../config/config.h"
 
+
 // session 
 Lm2m_session_T local_session[SESSION_MAX];
 u16 token_index = 0;
@@ -25,6 +26,7 @@ Lm2m_session_T *session_creat(Lm2m_pkt_T *p_recv,LM2M_Address_T *p_addr_src){
 }
 int recv_handle(Lm2m_local_T    *p_local, Lm2m_session_T *p_s, Lm2m_pkt_T *p_recv,LM2M_Address_T *p_addr_src){
 	Lm2m_session_T *p_new_s = NULL;
+	Lm2m_session_T tmp_ps ;
 
 	switch(p_recv->cmd){
 		case LM2M_CMD_GET_TOKEN:
@@ -32,7 +34,25 @@ int recv_handle(Lm2m_local_T    *p_local, Lm2m_session_T *p_s, Lm2m_pkt_T *p_rec
 			p_new_s = session_creat(p_recv, p_addr_src);
 			lm2m_send(p_local, p_new_s,LM2M_CMD_GET_TOKEN_ACK, sizeof(u16), &p_new_s->token);
 			return 0;
-			// todo 
+		case LM2M_CMD_GPIO_SET:
+			m2m_log("receive gpio request");
+			//p_new_s = session_creat(p_recv, p_addr_src);
+			// digitalWrite(p_recv->p_payload[0],p_recv->p_payload[1]);
+			
+			SESSION_CPY(tmp_ps, p_recv,p_addr_src);
+			lm2m_send(p_local, &tmp_ps,LM2M_CMD_GPIO_SET_ACK, 2* sizeof(u32), p_local->idh);
+			printf("<<<<<<<<<<<<<<<<<pin is %d\n",p_recv->p_payload[0]);
+			printf("<<<<<<<<<<<<<<<<<val is %d\n",p_recv->p_payload[1]);
+			return 0;
+		case LM2M_CMD_SCAN:
+			m2m_log("receive cmd LM2M_CMD_SCAN");
+			SESSION_CPY(tmp_ps, p_recv,p_addr_src);
+			lm2m_send(p_local, &tmp_ps,LM2M_CMD_SCAN_ACK, 2 * sizeof(u32), &p_local->idh);
+			//printf("<<<<<<<<<<<<<<<<<msgid is %d\n",p_recv->dst_idh);//0 1 0 2
+			return 0;
+		case CMD_SEND_SERIAL:
+			m2m_log("receive cmd CMD_SEND_SERIAL");
+			return 0;
 	}
 }
 
@@ -63,6 +83,7 @@ int main(void)
 			
 			p_pkt = lm2m_receive_match(&local, &local_session[i], len_recv, buf_recv);
 			if(p_pkt){
+				
 				ret = recv_handle(&local, &local_session[i],p_pkt, &addr_src);
 				break;
 			}

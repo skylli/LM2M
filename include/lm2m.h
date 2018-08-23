@@ -31,11 +31,15 @@ extern "C"
 
 typedef enum LM2M_CMD_T{
 	LM2M_CMD_NONE = 0,
-    LM2M_CMD_GET_TOKEN = 1,
-    LM2M_CMD_GET_TOKEN_ACK = 2,
-	LM2M_CMD_GPIO_SET = 3,
-	LM2M_CMD_GPIO_SET_ACK = 4,
-
+	LM2M_CMD_SCAN = 1,
+	LM2M_CMD_SCAN_ACK = 2,
+    LM2M_CMD_GET_TOKEN = 3,
+    LM2M_CMD_GET_TOKEN_ACK = 4,
+	LM2M_CMD_GPIO_SET = 5,
+	LM2M_CMD_GPIO_SET_ACK = 6,
+	CMD_SEND_SERIAL = 7,
+	CMD_SEND_SERIAL_ACK = 8,
+	CMD_ERR,
 	
     LM2M_CMD_MAX
 }Lm2m_cmd_T;
@@ -49,15 +53,15 @@ typedef enum LM2M_RET_T{
 }Lm2m_ret_T;
 
 typedef struct LM2M_PKT_T{
-	u8 ver;
-	u8 msgid;
-	u16 token;
-	u32 src_idh;
+	u8 ver;  //版本号
+	u8 msgid;	// session index 
+	u16 token;  // 回话令牌   设备端生成
+	u32 src_idh; // 包 源id
 	u32 src_idl;
-	u32 dst_idh;
+	u32 dst_idh; // 包 目标id
 	u32 dst_idl;
-	u16 cmd;
-	u16 len;
+	u16 cmd;	// 命令
+	u16 len;	// payload 长度
 	u8  p_payload[0];
 }Lm2m_pkt_T;
 typedef struct LM2M_ADDRESS_T
@@ -90,6 +94,11 @@ typedef struct LM2M_PAYLOAD_T{
     u32 len;
     u8 p_data[0];
 }LM2M_payload_T;
+
+typedef struct{
+	u8 pin;
+	u8 val;
+}UP2P_IO;
 
 #ifdef __cplusplus
 }

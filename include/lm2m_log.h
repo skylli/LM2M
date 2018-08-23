@@ -108,6 +108,7 @@ void m2m_file_print(int level,const char *fmt, ...);
         {m2m_printf("%s %d, assert failed!\r\n",__func__, __LINE__); \
             return (_return);}}while(0)
 
+void m2m_bytes_dump(u8 *p_shd,u8 *p,int len);
 
 
 #endif
