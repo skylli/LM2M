@@ -28,6 +28,7 @@ extern "C"
 #endif
 
 #define m2m_printf  printf
+#define ID_LEN  (8)
 
 typedef enum LM2M_CMD_T{
 	LM2M_CMD_NONE = 0,
@@ -77,12 +78,14 @@ typedef struct LM2M_LOCAL_T{
 	u32 idh;
 	u32 idl;
 }Lm2m_local_T;
+
 typedef struct LM2M_SESSION_T{
 	u8 flag;
 	u8 msgid;
 	u16 token;
 	u32 dst_idh;
 	u32 dst_idl;
+	u32 active_tm;
 	LM2M_Address_T addr;
 }Lm2m_session_T;
 

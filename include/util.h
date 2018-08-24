@@ -81,6 +81,10 @@
 											mcpy(d,s,slen);\
 											dlen = slen;\
 											}}while(0)
+#define INVERT_CPY(dst,src,len)		do{	int i =0;	\
+										for(i=0;i<ID_LEN;i++){	\
+											dst[ID_LEN - i-1] = src[i];		\	
+									}}while(0)
 								 
 #ifdef __cplusplus
                                  extern "C"{

@@ -13,7 +13,7 @@
 #include "../config/config.h"
 #include "../include/lm2m_log.h"
 
-u8 g_log_level = M2M_LOG_ALL;
+u8 g_log_level = M2M_LOG;
 
 #ifdef CONF_LOG_TIME
 void current_time_printf(void){
